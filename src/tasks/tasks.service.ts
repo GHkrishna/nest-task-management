@@ -33,9 +33,10 @@ export class TasksService {
   }
 
   deleteTaskById(taskId:string): string{
-    const removedInput = this.input.filter((task, index) =>{
+    const removedInput: Task[] = this.input.filter((task, index) =>{
       return this.input[index].id !== taskId
     })
+    this.input = removedInput;
     console.log('removed Input:::', removedInput);
     return 'success';
   }
