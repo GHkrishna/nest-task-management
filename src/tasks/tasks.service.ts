@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { TaskStatus } from "./task-status.enum";
-// a module to auto-generate id
-import { v4 as uuid } from "uuid";
 import { CreateTask } from "./dto/createTask.dto";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
 
