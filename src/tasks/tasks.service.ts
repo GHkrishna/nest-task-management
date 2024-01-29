@@ -15,7 +15,6 @@ export class TasksService {
 
   getTaskFiltered(filterDto: GetTaskFilter): Task[]{
     const { search, status } = filterDto;
-    console.log('::::Also Reached Here::::');
 
     let copyList: Task[] = this.input;
 

@@ -5,15 +5,16 @@ import { CreateTask } from "./dto/createTask.dto";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
 import { UpdateStatusDto } from "./dto/update-status-dto";
 
+
 @Controller("tasks")
 export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
   getTasks(@Query() filterDto: GetTaskFilter): Task[] | string{
-
     // If filter defined call by filter
-    if(Object.keys(filterDto).length){
+    if(Object.keys(filterDto).length > 0){
+    // if(filterDto.search != undefined || filterDto.status != undefined){
       return this.taskService.getTaskFiltered(filterDto)
     }else{
       // If filter not defined call getAllTasks()
