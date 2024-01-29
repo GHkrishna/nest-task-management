@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Task, TaskStatus } from "./tasks.model";
 // a module to auto-generate id
 import { v4 as uuid } from "uuid";
@@ -50,23 +50,33 @@ export class TasksService {
     return task;
   }
 
-  getTaskById(taskId: string){
-    return this.input.find((task) => {
+  getTaskById(taskId: string): Task{
+    const specificTask = this.input.find((task) => {
       return task.id === taskId;
     })
+    if(!specificTask){
+      throw new NotFoundException;
+    }
+    return specificTask;
   }
 
   deleteTaskById(taskId:string): string{
-    const removedInput: Task[] = this.input.filter((task, index) =>{
-      return this.input[index].id !== taskId
+    const toBeRemoved: Task[] = this.input.filter((task) =>{
+      return task.id !== taskId
     })
-    this.input = removedInput;
-    console.log('removed Input:::', removedInput);
+    if(toBeRemoved.length === this.input.length){
+      throw new NotFoundException;
+    }
+    this.input = toBeRemoved;
+    console.log('removed Input:::', toBeRemoved);
     return 'success';
   }
 
   updateStatusById(taskId: string, status: TaskStatus): Task{
       const taskToBeUpdated:Task = this.getTaskById(taskId);
+      if(!taskToBeUpdated){
+        throw new NotFoundException(`Not able to update the task of taskId: ${taskId}`);
+      }
       taskToBeUpdated.status = status;
 
       return taskToBeUpdated;
