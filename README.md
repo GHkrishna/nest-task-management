@@ -5,7 +5,11 @@ Task Management using NestJs
 
 1. Clone the repo
 2. ```npm install```
-3. ```npm run start:dev``` to watch changes or ```npm start``` to build <br>
+3. Additional step, if the application works with Postgres, the container must be built and started<br>
+```sudo docker run --name postgres-nest -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres```<br>
+Now start the container, <br>
+```sudo docker container start postgres-nest```
+4. ```npm run start:dev``` to watch changes or ```npm start``` to build <br>
 The app is by default hosted on http://localhost:3000
 
 ## Available handlers and endpoints
