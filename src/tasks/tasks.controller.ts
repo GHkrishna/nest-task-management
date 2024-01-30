@@ -14,6 +14,11 @@ import { Task } from "./task.entity";
 export class TasksController {
   constructor(private taskService: TasksService) {}
 
+  @Get()
+  async getAllTasks(): Promise<Task[]>{
+    return await this.taskService.getAllTasks();
+  }
+
   @Get('/:id')
   async getTasks(@Param('id') id: string): Promise<Task>{
     return await this.taskService.getTaskById(id);
@@ -28,6 +33,15 @@ export class TasksController {
   @Delete('/:id')
   deleteTaskId(@Param('id') id: string): Promise<string>{
     return this.taskService.deleteTask(id);
+  }
+
+  @Patch('/:id')
+  updateStatus(@Param('id') id: string, @Body() statusDto: UpdateStatusDto): Promise<Task>{
+    // if(Object.values(TaskStatus).includes(status)){
+      const status = statusDto.status;
+      return this.taskService.updateStatusById(id, status);
+    // }
+    // return 'Invalid Status'
   }
 
   // @Get()
@@ -49,18 +63,5 @@ export class TasksController {
   //   return task;
   // }
 
-  // @Delete('/:id')
-  // deleteTaskById(@Param('id') id: string): Task | string{
-  //   return this.taskService.deleteTaskById(id);
-  // }
 
-  // @Patch('/:id')
-  // patchTaskById(@Param('id') id: string, @Body() statusDto: UpdateStatusDto): Task | string{
-  //   // if(Object.values(TaskStatus).includes(status)){
-  //     const status = statusDto.status;
-  //     const updatedTask = this.taskService.updateStatusById(id, status);
-  //     return updatedTask;
-  //   // }
-  //   // return 'Invalid Status'
-  // }
 }

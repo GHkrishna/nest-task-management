@@ -14,6 +14,14 @@ export class TasksService {
     private tasksRepository: TasksRepository
   ){}
 
+  async getAllTasks(): Promise<Task[]>{
+    const allTasks = this.tasksRepository.find();
+    if(!allTasks){
+      throw new NotFoundException;
+    }
+    return allTasks;
+  }
+
   async getTaskById(id: string): Promise<Task> {
     const found = await this.tasksRepository.findOneBy({id});
 
@@ -26,13 +34,7 @@ export class TasksService {
 
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    const {title, description} = createTaskDto;
-    const task: Task = this.tasksRepository.create({
-      title,
-      description,
-      status: TaskStatus.ACTIVE,
-    })
-    await this.tasksRepository.save(task);
+    const task = this.tasksRepository.createTask(createTaskDto);
     return task;
   }
 
@@ -47,6 +49,15 @@ export class TasksService {
     return "deleted successfully";
   }
 
+  async updateStatusById(id: string, status: TaskStatus): Promise<Task>{
+    const toBeUpdated = await this.getTaskById(id);
+
+    toBeUpdated.status = status;
+    const updatedTask = await this.tasksRepository.save(toBeUpdated);
+    console.log("Updated task:::", updatedTask);
+    return updatedTask;
+  }
+ 
   // private input: Task[] = [];
 
   // getAllTasks(): Task[] {
