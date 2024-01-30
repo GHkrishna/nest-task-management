@@ -1,14 +1,29 @@
+// Implemented until 48
+
+
 import { Controller, Get, Post, Body, Param, Delete, Patch, Query, NotFoundException } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { TaskStatus } from "./task-status.enum";
-import { CreateTask } from "./dto/createTask.dto";
+import { CreateTaskDto } from "./dto/createTask.dto";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
 import { UpdateStatusDto } from "./dto/update-status-dto";
+import { Task } from "./task.entity";
 
 
 @Controller("tasks")
 export class TasksController {
   constructor(private taskService: TasksService) {}
+
+  @Get('/:id')
+  async getTasks(@Param('id') id: string): Promise<Task>{
+    return await this.taskService.getTaskById(id);
+  }
+
+
+  @Post()
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.taskService.createTask(createTaskDto);
+  }
 
   // @Get()
   // getTasks(@Query() filterDto: GetTaskFilter): Task[] | string{
@@ -22,11 +37,6 @@ export class TasksController {
   //   }
   // }
 
-  // @Post()
-  // createTask(@Body() createTask: CreateTask): Task {
-  //   const task: Task = this.taskService.createTask(createTask);
-  //   return task;
-  // }
 
   // @Get('/:id')
   // getTAskById(@Param('id') id: string){
