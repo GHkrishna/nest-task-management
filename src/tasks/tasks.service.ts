@@ -36,17 +36,15 @@ export class TasksService {
     return task;
   }
 
-  async deleteTask(id: string): Promise<Task>{
-    // Find by id
-    const toBeDeleted: Task = await this.getTaskById(id);
+  async deleteTask(id: string): Promise<string>{
+    const deleteResult = await this.tasksRepository.delete(id);
 
-    if (!toBeDeleted){
+    if (deleteResult.affected === 0){
       throw new NotFoundException;
     }
 
-    // then delete
-    await this.tasksRepository.delete(toBeDeleted);
-    return toBeDeleted;
+    console.log("Delete Result", deleteResult);
+    return "deleted successfully";
   }
 
   // private input: Task[] = [];
