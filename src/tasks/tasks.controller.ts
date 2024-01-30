@@ -25,6 +25,11 @@ export class TasksController {
     return this.taskService.createTask(createTaskDto);
   }
 
+  @Delete('/:id')
+  deleteTaskId(@Param('id') id: string): Promise<Task>{
+    return this.taskService.deleteTask(id);
+  }
+
   // @Get()
   // getTasks(@Query() filterDto: GetTaskFilter): Task[] | string{
   //   // If filter defined call by filter

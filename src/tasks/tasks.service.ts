@@ -36,6 +36,19 @@ export class TasksService {
     return task;
   }
 
+  async deleteTask(id: string): Promise<Task>{
+    // Find by id
+    const toBeDeleted: Task = await this.getTaskById(id);
+
+    if (!toBeDeleted){
+      throw new NotFoundException;
+    }
+
+    // then delete
+    await this.tasksRepository.delete(toBeDeleted);
+    return toBeDeleted;
+  }
+
   // private input: Task[] = [];
 
   // getAllTasks(): Task[] {
