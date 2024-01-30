@@ -3,7 +3,6 @@
 
 import { Controller, Get, Post, Body, Param, Delete, Patch, Query, NotFoundException } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
-import { TaskStatus } from "./task-status.enum";
 import { CreateTaskDto } from "./dto/createTask.dto";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
 import { UpdateStatusDto } from "./dto/update-status-dto";
@@ -15,8 +14,8 @@ export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
-  async getAllTasks(): Promise<Task[]>{
-    return await this.taskService.getAllTasks();
+  async getAllTasks(@Query() filterDto: GetTaskFilter): Promise<Task[]>{
+    return await this.taskService.getAllTasks(filterDto);
   }
 
   @Get('/:id')
