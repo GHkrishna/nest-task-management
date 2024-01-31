@@ -20,11 +20,9 @@ export class UsersRepository extends Repository<User>{
         const salt = await bcrypt.genSalt()
         const hashedPass = await bcrypt.hash(unHashed, salt);
 
-        authCredentialsDto.password = hashedPass;
-
         const query = this.create({
             username: username,
-            password: password,
+            password: hashedPass,
         })
 
         const result = await this.save(query);
