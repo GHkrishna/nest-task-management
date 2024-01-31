@@ -16,7 +16,7 @@ export class UsersRepository extends Repository<User>{
         const { username, password } = authCredentialsDto;
 
 
-        const unHashed = authCredentialsDto.password;
+        const unHashed = password;
         const salt = await bcrypt.genSalt()
         const hashedPass = await bcrypt.hash(unHashed, salt);
 
@@ -35,5 +35,9 @@ export class UsersRepository extends Repository<User>{
             else
             throw new Error(err);
         }
+    }
+
+    async getDetails(authCredentialsDto: AuthCredentialsDto){
+
     }
 }
