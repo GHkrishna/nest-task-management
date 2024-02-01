@@ -4,6 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateTaskDto } from "./dto/createTask.dto";
 import { TaskStatus } from "./task-status.enum";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
+import { User } from "src/auth/user.entity";
 
 @Injectable()
 export class TasksRepository extends Repository<Task> {
@@ -11,22 +12,24 @@ export class TasksRepository extends Repository<Task> {
     super(Task, dataSource.createEntityManager());
   }
 
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const {title, description} = createTaskDto;
     const task: Task = this.create({
       title,
       description,
       status: TaskStatus.ACTIVE,
+      user,
     })
     await this.save(task);
 
     return task;
   }
 
-  async getTasks(filterDto: GetTaskFilter): Promise<Task[]>{
+  async getTasks(filterDto: GetTaskFilter, user: User): Promise<Task[]>{
     const {search, status} = filterDto;
 
     const query = this.createQueryBuilder('task');
+    query.where({ user });
 
     if(status){
       query.andWhere('task.status = :status', {status});
@@ -34,10 +37,10 @@ export class TasksRepository extends Repository<Task> {
 
     if(search){
       // search logic
-      // query.andWhere(
-      //   'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
-      //   {search: `%${search}%}`}, // % = the term may have any characters before and after
-      //   )
+      query.andWhere(
+        '(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))',
+        {search: `%${search}%}`}, // % = the term may have any characters before and after
+        )
 
       query.andWhere(
         // The new Brackets tell to add this query separately if both query are passed

@@ -3,7 +3,7 @@ import { DataSource, Repository } from "typeorm";
 import { User } from "./user.entity";
 import { AuthCredentialsDto } from "./dto/authCredentials.dto";
 import { DatabaseErrorCodes } from './enums/error-code.enum';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository extends Repository<User>{
