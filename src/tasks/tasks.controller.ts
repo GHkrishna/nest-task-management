@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query, NotFoundException, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+  Query,
+  NotFoundException,
+  UseGuards,
+} from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto } from "./dto/createTask.dto";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
@@ -9,61 +20,60 @@ import { GetUser } from "../auth/get-user.decorator";
 import { User } from "../auth/user.entity";
 import { ConfigService } from "@nestjs/config";
 
-
 @Controller("tasks")
 @UseGuards(AuthGuard())
 export class TasksController {
   constructor(
     private taskService: TasksService,
     private configService: ConfigService
-    ) {
-      console.log(configService.get('TEST_VALUE'));
-    }
+  ) {
+    console.log(configService.get("TEST_VALUE"));
+  }
 
   @Get()
   async getAllTasks(
     @Query() filterDto: GetTaskFilter,
-    @GetUser() user: User,
-    ): Promise<Task[]>{
+    @GetUser() user: User
+  ): Promise<Task[]> {
     return await this.taskService.getAllTasks(filterDto, user);
   }
 
-  @Get('/:id')
+  @Get("/:id")
   async getTasks(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @GetUser() user: User
-    ): Promise<Task>{
+  ): Promise<Task> {
     return await this.taskService.getTaskById(id, user);
   }
-
 
   @Post()
   createTask(
     @Body() createTaskDto: CreateTaskDto,
-    @GetUser() user: User,
-    ): Promise<Task> {
+    @GetUser() user: User
+  ): Promise<Task> {
     return this.taskService.createTask(createTaskDto, user);
   }
 
-  @Delete('/:id')
-  deleteTaskId(@Param('id') id: string, @GetUser() user: User): Promise<string>{
+  @Delete("/:id")
+  deleteTaskId(
+    @Param("id") id: string,
+    @GetUser() user: User
+  ): Promise<string> {
     return this.taskService.deleteTask(id, user);
   }
 
-  @Patch('/:id')
-  updateStatus(@Param('id') id: string, @Body() statusDto: UpdateStatusDto, @GetUser() user: User): Promise<Task>{
+  @Patch("/:id")
+  updateStatus(
+    @Param("id") id: string,
+    @Body() statusDto: UpdateStatusDto,
+    @GetUser() user: User
+  ): Promise<Task> {
     // if(Object.values(TaskStatus).includes(status)){
-      const status = statusDto.status;
-      return this.taskService.updateStatusById(id, status, user);
+    const status = statusDto.status;
+    return this.taskService.updateStatusById(id, status, user);
     // }
     // return 'Invalid Status'
   }
-
-
-
-
-
-
 
   // @Get()
   // getTasks(@Query() filterDto: GetTaskFilter): Task[] | string{
@@ -77,12 +87,9 @@ export class TasksController {
   //   }
   // }
 
-
   // @Get('/:id')
   // getTAskById(@Param('id') id: string){
   //   const task: Task= this.taskService.getTaskById(id);
   //   return task;
   // }
-
-
 }

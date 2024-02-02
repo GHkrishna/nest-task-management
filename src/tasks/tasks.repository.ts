@@ -13,43 +13,43 @@ export class TasksRepository extends Repository<Task> {
   }
 
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-    const {title, description} = createTaskDto;
+    const { title, description } = createTaskDto;
     const task: Task = this.create({
       title,
       description,
       status: TaskStatus.ACTIVE,
       user,
-    })
+    });
     await this.save(task);
 
     return task;
   }
 
-  async getTasks(filterDto: GetTaskFilter, user: User): Promise<Task[]>{
-    const {search, status} = filterDto;
+  async getTasks(filterDto: GetTaskFilter, user: User): Promise<Task[]> {
+    const { search, status } = filterDto;
 
-    const query = this.createQueryBuilder('task');
+    const query = this.createQueryBuilder("task");
     query.where({ user });
 
-    if(status){
-      query.andWhere('task.status = :status', {status});
+    if (status) {
+      query.andWhere("task.status = :status", { status });
     }
 
-    if(search){
+    if (search) {
       // search logic
       query.andWhere(
-        '(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))',
-        {search: `%${search}%}`}, // % = the term may have any characters before and after
-        )
+        "(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))",
+        { search: `%${search}%}` } // % = the term may have any characters before and after
+      );
 
       query.andWhere(
         // The new Brackets tell to add this query separately if both query are passed
         new Brackets((qb) => {
-          qb.where('title ILIKE :search OR description ILIKE :search', {
-          search: `%${search}%`,
+          qb.where("title ILIKE :search OR description ILIKE :search", {
+            search: `%${search}%`,
           });
-        }),
-        )
+        })
+      );
     }
 
     const allTasks = await query.getMany();

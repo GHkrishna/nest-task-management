@@ -1,5 +1,5 @@
-enum DatabaseErrorCodes{
-    uniqueValue= '23505',
+enum DatabaseErrorCodes {
+  uniqueValue = "23505",
 }
 
-export {DatabaseErrorCodes};
+export { DatabaseErrorCodes };
