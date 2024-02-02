@@ -6,13 +6,24 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
+    // Config module defined to use variables from env depending on STAGE
+    // STAGE: dev, prod. Defined in start command
     ConfigModule.forRoot({
       envFilePath: [`.env.stage.${process.env.STAGE}`],
     }),
+
+    // Imports
+    AuthModule,
     TasksModule,
+
+    // TypeORM used as a data connectivity between our app and postres DB
+    // TypeOrmModule asynchronously waits for,
     TypeOrmModule.forRootAsync({
+      // Modules defined in Imports and
       imports: [ConfigModule],
+      // Services defined in inject, to be loaded
       inject: [ConfigService],
+      // useFactory used to create providers dynamically
       useFactory: async (configService: ConfigService) => {
         return {
           type: "postgres",
@@ -26,6 +37,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
         };
       },
     }),
+
+    // Used if configs are give statically
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
     //   host: 'localhost',
@@ -36,7 +49,6 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     //   autoLoadEntities: true,
     //   synchronize: true,
     // }),
-    AuthModule,
   ],
   controllers: [],
   providers: [],

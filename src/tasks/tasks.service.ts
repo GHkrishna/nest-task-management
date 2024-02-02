@@ -10,6 +10,7 @@ import { User } from "../auth/user.entity";
 @Injectable()
 export class TasksService {
   constructor(
+    // Instance of Injectable TaskRepository
     @InjectRepository(TasksRepository)
     private tasksRepository: TasksRepository
   ) {}
@@ -35,8 +36,10 @@ export class TasksService {
   }
 
   async deleteTask(id: string, user: User): Promise<string> {
+    // Returns deleted, i.e. rows affected
     const deleteResult = await this.tasksRepository.delete({ id, user });
 
+    // If no rows affected after deletion, i.e. no rows with such id and user exist
     if (deleteResult.affected === 0) {
       throw new NotFoundException();
     }
@@ -52,83 +55,11 @@ export class TasksService {
   ): Promise<Task> {
     const toBeUpdated = await this.getTaskById(id, user);
 
+    // Update status from returned object
     toBeUpdated.status = status;
+    // Save the object in db
     const updatedTask = await this.tasksRepository.save(toBeUpdated);
     console.log("Updated task:::", updatedTask);
     return updatedTask;
   }
-
-  // private input: Task[] = [];
-
-  // getAllTasks(): Task[] {
-  //   return this.input;
-  // }
-
-  // getTaskFiltered(filterDto: GetTaskFilter): Task[]{
-  //   const { search, status } = filterDto;
-
-  //   let copyList: Task[] = this.input;
-
-  //   if(status){
-  //     copyList = copyList.filter((task) => {
-  //       return task.status === status
-  //     })
-  //   }
-  //   if(search){
-  //     copyList = copyList.filter((task) =>{
-  //       if(task.title.includes(search) || task.description.includes(search))
-  //       return true;
-  //     else
-  //     return false;
-  //     })
-  //   }
-  //   return copyList;
-
-  //   }
-
-  // createTask(createTask: CreateTask): Task {
-  //   const { title, description } = createTask;
-  //   const task: Task = {
-  //     id: uuid(),
-  //     title: title,
-  //     description: description,
-  //     status: TaskStatus.ACTIVE,
-  //   };
-
-  //   console.log("Updated task", task);
-  //   this.input.push(task);
-  //   return task;
-  // }
-
-  // getTaskById(taskId: string): Task{
-  //   const specificTask = this.input.find((task) => {
-  //     return task.id === taskId;
-  //   })
-  //   if(!specificTask){
-  //     throw new NotFoundException;
-  //   }
-  //   return specificTask;
-  // }
-
-  // deleteTaskById(taskId:string): string{
-  //   const toBeRemoved: Task[] = this.input.filter((task) =>{
-  //     return task.id !== taskId
-  //   })
-  //   if(toBeRemoved.length === this.input.length){
-  //     throw new NotFoundException;
-  //   }
-  //   this.input = toBeRemoved;
-  //   console.log('removed Input:::', toBeRemoved);
-  //   return 'success';
-  // }
-
-  // updateStatusById(taskId: string, status: TaskStatus): Task{
-  //     const taskToBeUpdated:Task = this.getTaskById(taskId);
-  //     if(!taskToBeUpdated){
-  //       throw new NotFoundException(`Not able to update the task of taskId: ${taskId}`);
-  //     }
-  //     taskToBeUpdated.status = status;
-
-  //     return taskToBeUpdated;
-  // }
 }

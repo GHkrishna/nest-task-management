@@ -7,7 +7,6 @@ import {
   Delete,
   Patch,
   Query,
-  NotFoundException,
   UseGuards,
 } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
@@ -18,22 +17,24 @@ import { Task } from "./task.entity";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "../auth/get-user.decorator";
 import { User } from "../auth/user.entity";
-import { ConfigService } from "@nestjs/config";
 
 @Controller("tasks")
+// AuthGuard a functionality of Passport defined for all handlers under the controller to use authorization
 @UseGuards(AuthGuard())
 export class TasksController {
   constructor(
-    private taskService: TasksService,
-    private configService: ConfigService
+    // taskService instance created
+    private taskService: TasksService
   ) {
-    console.log(configService.get("TEST_VALUE"));
   }
 
   @Get()
   async getAllTasks(
     @Query() filterDto: GetTaskFilter,
+    // Custom decorator
+    // From execution context gets the 'user' from request
     @GetUser() user: User
+    // Since it awaits for response hence Promise returned
   ): Promise<Task[]> {
     return await this.taskService.getAllTasks(filterDto, user);
   }
@@ -68,28 +69,7 @@ export class TasksController {
     @Body() statusDto: UpdateStatusDto,
     @GetUser() user: User
   ): Promise<Task> {
-    // if(Object.values(TaskStatus).includes(status)){
     const status = statusDto.status;
     return this.taskService.updateStatusById(id, status, user);
-    // }
-    // return 'Invalid Status'
   }
-
-  // @Get()
-  // getTasks(@Query() filterDto: GetTaskFilter): Task[] | string{
-  //   // If filter defined call by filter
-  //   if(Object.keys(filterDto).length > 0){
-  //   // if(filterDto.search != undefined || filterDto.status != undefined){
-  //     return this.taskService.getTaskFiltered(filterDto)
-  //   }else{
-  //     // If filter not defined call getAllTasks()
-  //     return this.taskService.getAllTasks();
-  //   }
-  // }
-
-  // @Get('/:id')
-  // getTAskById(@Param('id') id: string){
-  //   const task: Task= this.taskService.getTaskById(id);
-  //   return task;
-  // }
 }

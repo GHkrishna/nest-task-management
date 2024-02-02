@@ -21,6 +21,7 @@ export class AuthController {
     return await this.authService.signIn(authCredentialsDto);
   }
 
+  // Service endpoint for testing auth
   @Get("test")
   @UseGuards(AuthGuard())
   test(@Req() req: Request) {

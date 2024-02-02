@@ -1,3 +1,7 @@
+// This transforms the response to exclude the sensitive user data and only sends data received from other columns
+// for Entity(User)
+// As defined,
+// @Exclude({ toPlainOnly: true })
 import {
   NestInterceptor,
   ExecutionContext,

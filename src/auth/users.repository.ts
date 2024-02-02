@@ -6,6 +6,7 @@ import { DatabaseErrorCodes } from "./enums/error-code.enum";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
+// Standard way of extending repository of entity type User
 export class UsersRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
@@ -16,9 +17,12 @@ export class UsersRepository extends Repository<User> {
       const { username, password } = authCredentialsDto;
 
       const unHashed = password;
+      // Generate salt
       const salt = await bcrypt.genSalt();
+      // Hash password using salt
       const hashedPass = await bcrypt.hash(unHashed, salt);
 
+      // Store username and hashed password
       const query = this.create({
         username: username,
         password: hashedPass,
@@ -27,6 +31,7 @@ export class UsersRepository extends Repository<User> {
       const result = await this.save(query);
       return result;
     } catch (err) {
+      // check if DB throws error code '23505', this means the username already exist
       if (err.code === DatabaseErrorCodes.uniqueValue) {
         throw new ConflictException(
           `The username:::: '${authCredentialsDto.username}' already exists. Please try with a different username`
@@ -34,6 +39,4 @@ export class UsersRepository extends Repository<User> {
       } else throw new Error(err);
     }
   }
-
-  async getDetails(authCredentialsDto: AuthCredentialsDto) {}
 }
