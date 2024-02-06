@@ -3,6 +3,8 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { TransformInterceptor } from "./transform.interceptor";
 import { Logger } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+
 
 async function bootstrap() {
   // Used to log
@@ -16,6 +18,16 @@ async function bootstrap() {
   // This transforms the response to exclude the sensitive user data and only sends data received from other columns
   app.useGlobalInterceptors(new TransformInterceptor());
   // Interceptor, other middleware must be defined before app listens
+
+  const config = new DocumentBuilder()
+    .setTitle("Nest-js-testing")
+    .setDescription("Testing out NestJs")
+    .setVersion("1.0")
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("api", app, document);
+
+
   await app.listen(PORT);
   logger.verbose(`listenin on port:${PORT} \n\n http://localhost.com:${PORT}`);
 }

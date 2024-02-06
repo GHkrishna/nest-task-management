@@ -8,12 +8,15 @@ import { TestDto } from "./dto/test.dto";
 import { ValidateNested } from "class-validator";
 import { isValid } from "./sample/custom-validations";
 import { NestedArrayDto, NestedDto } from "./dto/test-nested.dto";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
 
 @Controller("auth")
+@ApiTags("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("signup")
+  @ApiBody({type:AuthCredentialsDto})
   async signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<User> {
     return await this.authService.signUp(authCredentialsDto);
   }

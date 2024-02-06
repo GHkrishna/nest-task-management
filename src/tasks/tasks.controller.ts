@@ -12,13 +12,15 @@ import {
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto } from "./dto/createTask.dto";
 import { GetTaskFilter } from "./dto/get-task-filter.dto";
-import { UpdateStatusDto } from "./dto/update-status-dto";
+import { UpdateStatusDto } from "./dto/update-status.dto";
 import { Task } from "./task.entity";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "../auth/get-user.decorator";
 import { User } from "../auth/user.entity";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller("tasks")
+@ApiTags("tasks")
 // AuthGuard a functionality of Passport defined for all handlers under the controller to use authorization
 @UseGuards(AuthGuard())
 export class TasksController {
