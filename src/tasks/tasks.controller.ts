@@ -17,10 +17,11 @@ import { Task } from "./task.entity";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "../auth/get-user.decorator";
 import { User } from "../auth/user.entity";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @Controller("tasks")
 @ApiTags("tasks")
+@ApiBearerAuth()
 // AuthGuard a functionality of Passport defined for all handlers under the controller to use authorization
 @UseGuards(AuthGuard())
 export class TasksController {

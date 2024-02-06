@@ -5,7 +5,6 @@ import { TransformInterceptor } from "./transform.interceptor";
 import { Logger } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
-
 async function bootstrap() {
   // Used to log
   // Context defined: Main Context
@@ -20,13 +19,13 @@ async function bootstrap() {
   // Interceptor, other middleware must be defined before app listens
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle("Nest-js-testing")
     .setDescription("Testing out NestJs")
     .setVersion("1.0")
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
-
 
   await app.listen(PORT);
   logger.verbose(`listenin on port:${PORT} \n\n http://localhost.com:${PORT}`);
