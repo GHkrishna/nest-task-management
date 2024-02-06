@@ -8,13 +8,14 @@ import { TestDto } from "./dto/test.dto";
 import { ValidateNested } from "class-validator";
 import { isValid } from "./sample/custom-validations";
 import { NestedArrayDto, NestedDto } from "./dto/test-nested.dto";
+import { user as userModel } from "@prisma/client";
 
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post("signup")
-  async signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<User> {
+  async signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<userModel> {
     return await this.authService.signUp(authCredentialsDto);
   }
 

@@ -4,15 +4,15 @@ import { User } from "./user.entity";
 import { AuthCredentialsDto } from "./dto/authCredentials.dto";
 import { DatabaseErrorCodes } from "./enums/error-code.enum";
 import * as bcrypt from "bcrypt";
+import { PrismaService } from "prisma.service";
+import { user as userModel } from "@prisma/client";
 
 @Injectable()
-// Standard way of extending repository of entity type User
-export class UsersRepository extends Repository<User> {
-  constructor(private dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
+export class UsersRepository {
+  constructor(private prismaService: PrismaService) {
   }
 
-  async createUser(authCredentialsDto: AuthCredentialsDto): Promise<User> {
+  async createUser(authCredentialsDto: AuthCredentialsDto): Promise<userModel> {
     try {
       const { username, password } = authCredentialsDto;
 
@@ -23,12 +23,12 @@ export class UsersRepository extends Repository<User> {
       const hashedPass = await bcrypt.hash(unHashed, salt);
 
       // Store username and hashed password
-      const query = this.create({
-        username: username,
-        password: hashedPass,
+      const result = this.prismaService.user.create({
+        data:{
+          username: username,
+          password: hashedPass,
+        }
       });
-
-      const result = await this.save(query);
       return result;
     } catch (err) {
       // check if DB throws error code '23505', this means the username already exist
