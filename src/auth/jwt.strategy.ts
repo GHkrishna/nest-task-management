@@ -1,38 +1,48 @@
 import { PassportStrategy } from "@nestjs/passport";
-import { InjectRepository } from "@nestjs/typeorm";
+// import { InjectRepository } from "@nestjs/typeorm";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { UsersRepository } from "./users.repository";
+// import { UsersRepository } from "./users.repository";
 import { JwtPayload } from "./interfaces/jwt-token.interface";
-import { UnauthorizedException } from "@nestjs/common";
-import { User } from "./user.entity";
-import { ConfigService } from "@nestjs/config";
-import { PrismaService } from "prisma.service";
+import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+// import { User } from "./user.entity";
+// import { user as userModel } from "@prisma/client";
+// import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "../../prisma/prisma.service";
 
+@Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectRepository(UsersRepository)
     private prismaService: PrismaService,
-    private configService: ConfigService
+    // private configService: ConfigService 
   ) {
     // Tells PassportStrategy the secretOrKey and where to get jwtFromRequest
     super({
-      secretOrKey: configService.get("JWT_SECRET"),
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // secretOrKey: configService.get("JWT_SECRET"),
+      secretOrKey: "topSecret",
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
     });
   }
 
-  // validate function to validate if the username in the token, once decrypted, actually exist
+  // validate function to validate if the username in the token, once decrypted, actually exist.
   // This function is called each time an authorised endpoint is accessed
   async validate(payload: JwtPayload): Promise<any> {
     const { username } = payload;
-    const user = await this.prismaService.user.findUnique({ 
-      where: {username} 
-    });
+    let userResult: any;
+    try{
+      userResult = await this.prismaService.user.findFirst({ 
+        where: {username} 
+      });
+    }
+    catch(err){
+      console.log(err);
+    }
 
-    if (!user) {
+    if(!userResult) {
       throw new UnauthorizedException();
     }
 
-    return user;
+    Logger.verbose(":::::::::::Reached here:::::::::::")
+    Logger.verbose(":::::::::::userResult:::::::::::", userResult)
+    return userResult;
   }
 }

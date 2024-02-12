@@ -8,10 +8,12 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtStrategy } from "./jwt.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { PrismaService } from "../../prisma.service";
+import { PrismaService } from "../../prisma/prisma.service";
+import { PrismaModule } from "prisma/prisma.module";
 
 @Module({
   imports: [
+    PrismaModule,
     ConfigModule,
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
@@ -26,7 +28,7 @@ import { PrismaService } from "../../prisma.service";
         };
       },
     }),
-    TypeOrmModule.forFeature([User]),
+    // TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
   providers: [AuthService, UsersRepository, JwtStrategy, PrismaService],

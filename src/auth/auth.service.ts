@@ -10,7 +10,7 @@ import { AuthCredentialsDto } from "./dto/authCredentials.dto";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "./interfaces/jwt-token.interface";
-import { PrismaService } from "../../prisma.service";
+import { PrismaService } from "../../prisma/prisma.service";
 import { DatabaseErrorCodes } from "./enums/error-code.enum";
 // import { Prisma, PrismaClient } from '@prisma/client/edge'
 import { user as userModel } from "@prisma/client";
@@ -21,11 +21,11 @@ import { user as userModel } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
-  prisma: any;
   constructor(
     private readonly usersRepository: UsersRepository,
     // Instance for JwtService made available by the JwtModule
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private prismaService: PrismaService
   ) {}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<userModel> {
@@ -39,7 +39,7 @@ export class AuthService {
     // DTO destructuring
 
     const { username, password } = authCredentialsDto;
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where:{ username: username }
     });
 

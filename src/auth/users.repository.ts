@@ -1,15 +1,17 @@
-import { ConflictException, Injectable } from "@nestjs/common";
-import { DataSource, Repository } from "typeorm";
-import { User } from "./user.entity";
+import { ConflictException, Injectable, Logger } from "@nestjs/common";
+// import { DataSource, Repository } from "typeorm";
+// import { User } from "./user.entity";
 import { AuthCredentialsDto } from "./dto/authCredentials.dto";
-import { DatabaseErrorCodes } from "./enums/error-code.enum";
+// import { DatabaseErrorCodes } from "./enums/error-code.enum";
 import * as bcrypt from "bcrypt";
-import { PrismaService } from "prisma.service";
-import { user as userModel } from "@prisma/client";
+import { PrismaService } from "../../prisma/prisma.service";
+import { Prisma, user as userModel } from "@prisma/client";
 
 @Injectable()
 export class UsersRepository {
-  constructor(private prismaService: PrismaService) {
+  constructor(private prismaService: PrismaService,
+    // private prisma = new PrismaClient()
+    ) {
   }
 
   async createUser(authCredentialsDto: AuthCredentialsDto): Promise<userModel> {
@@ -23,7 +25,7 @@ export class UsersRepository {
       const hashedPass = await bcrypt.hash(unHashed, salt);
 
       // Store username and hashed password
-      const result = this.prismaService.user.create({
+      const result = await this.prismaService.user.create({
         data:{
           username: username,
           password: hashedPass,
@@ -32,11 +34,15 @@ export class UsersRepository {
       return result;
     } catch (err) {
       // check if DB throws error code '23505', this means the username already exist
-      if (err.code === DatabaseErrorCodes.uniqueValue) {
+      console.log("Readcged here:::::")
+      if( err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002')
+      // Logger.verbose("Error code:::::::", err.code);
+      // if (err.code === 'P2002') {
         throw new ConflictException(
           `The username:::: '${authCredentialsDto.username}' already exists. Please try with a different username`
         );
-      } else throw new Error(err);
+      // } else 
+      // throw new Error(err);
     }
   }
 }

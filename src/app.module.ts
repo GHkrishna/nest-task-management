@@ -3,6 +3,7 @@ import { TasksModule } from "./tasks/tasks.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { PrismaModule } from "prisma/prisma.module";
 
 @Module({
   imports: [
@@ -15,28 +16,29 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     // Imports
     AuthModule,
     TasksModule,
+    PrismaModule
 
-    // TypeORM used as a data connectivity between our app and postres DB
-    // TypeOrmModule asynchronously waits for,
-    TypeOrmModule.forRootAsync({
-      // Modules defined in Imports and
-      imports: [ConfigModule],
-      // Services defined in inject, to be loaded
-      inject: [ConfigService],
-      // useFactory used to create providers dynamically
-      useFactory: async (configService: ConfigService) => {
-        return {
-          type: "postgres",
-          host: configService.get("DB_HOST"),
-          port: configService.get("DB_PORT"),
-          username: configService.get("DB_USERNAME"),
-          password: configService.get("DB_PASSWORD"),
-          database: configService.get("DB_DATABASE"),
-          autoLoadEntities: true,
-          synchronize: true,
-        };
-      },
-    }),
+    // // TypeORM used as a data connectivity between our app and postres DB
+    // // TypeOrmModule asynchronously waits for,
+    // TypeOrmModule.forRootAsync({
+    //   // Modules defined in Imports and
+    //   imports: [ConfigModule],
+    //   // Services defined in inject, to be loaded
+    //   inject: [ConfigService],
+    //   // useFactory used to create providers dynamically
+    //   useFactory: async (configService: ConfigService) => {
+    //     return {
+    //       type: "postgres",
+    //       host: configService.get("DB_HOST"),
+    //       port: configService.get("DB_PORT"),
+    //       username: configService.get("DB_USERNAME"),
+    //       password: configService.get("DB_PASSWORD"),
+    //       database: configService.get("DB_DATABASE"),
+    //       autoLoadEntities: true,
+    //       synchronize: true,
+    //     };
+    //   },
+    // }),
 
     // Used if configs are give statically
     // TypeOrmModule.forRoot({

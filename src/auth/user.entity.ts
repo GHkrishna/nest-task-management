@@ -1,18 +1,26 @@
-import { Task } from "../tasks/task.entity";
+// import { Task } from "../tasks/task.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn("uuid")
+// @Entity()
+// export class User {
+//   @PrimaryGeneratedColumn("uuid")
+//   id: string;
+
+//   @Column({ unique: true })
+//   username: string;
+
+//   @Column()
+//   password: string;
+
+//   // eager = fetch all the tasks
+//   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
+//   tasks: Task[];
+// }
+
+export class User{
   id: string;
-
-  @Column({ unique: true })
   username: string;
-
-  @Column()
   password: string;
-
-  // eager = fetch all the tasks
-  @OneToMany((_type) => Task, (task) => task.user, { eager: true })
-  tasks: Task[];
+  // tasks: Task[]
+  task: any
 }

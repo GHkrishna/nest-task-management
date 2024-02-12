@@ -19,7 +19,7 @@ export class Task {
 
   // Many to One relation to 'User'
   // user
-  @ManyToOne((_type) => User, (user) => user.tasks, { eager: false })
+  @ManyToOne((_type) => User, (user) => user.task, { eager: false })
   // Using a custom interceptor defined at root, 'transform.inerceptor.ts'
   // The @Exclude decorator excludes the User data to be returned in plain format
   // Since the transform interceptor only returs reponses in plain format, the user field is excluded from all global response

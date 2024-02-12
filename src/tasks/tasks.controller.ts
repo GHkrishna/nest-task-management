@@ -28,24 +28,24 @@ export class TasksController {
   ) {
   }
 
-  @Get()
-  async getAllTasks(
-    @Query() filterDto: GetTaskFilter,
-    // Custom decorator
-    // From execution context gets the 'user' from request
-    @GetUser() user: User
-    // Since it awaits for response hence Promise returned
-  ): Promise<Task[]> {
-    return await this.taskService.getAllTasks(filterDto, user);
-  }
+  // @Get()
+  // async getAllTasks(
+  //   @Query() filterDto: GetTaskFilter,
+  //   // Custom decorator
+  //   // From execution context gets the 'user' from request
+  //   @GetUser() user: User
+  //   // Since it awaits for response hence Promise returned
+  // ): Promise<Task[]> {
+  //   return await this.taskService.getAllTasks(filterDto, user);
+  // }
 
-  @Get("/:id")
-  async getTasks(
-    @Param("id") id: string,
-    @GetUser() user: User
-  ): Promise<Task> {
-    return await this.taskService.getTaskById(id, user);
-  }
+  // @Get("/:id")
+  // async getTasks(
+  //   @Param("id") id: string,
+  //   @GetUser() user: User
+  // ): Promise<Task> {
+  //   return await this.taskService.getTaskById(id, user);
+  // }
 
   @Post()
   createTask(
@@ -55,21 +55,21 @@ export class TasksController {
     return this.taskService.createTask(createTaskDto, user);
   }
 
-  @Delete("/:id")
-  deleteTaskId(
-    @Param("id") id: string,
-    @GetUser() user: User
-  ): Promise<string> {
-    return this.taskService.deleteTask(id, user);
-  }
+  // @Delete("/:id")
+  // deleteTaskId(
+  //   @Param("id") id: string,
+  //   @GetUser() user: User
+  // ): Promise<string> {
+  //   return this.taskService.deleteTask(id, user);
+  // }
 
-  @Patch("/:id")
-  updateStatus(
-    @Param("id") id: string,
-    @Body() statusDto: UpdateStatusDto,
-    @GetUser() user: User
-  ): Promise<Task> {
-    const status = statusDto.status;
-    return this.taskService.updateStatusById(id, status, user);
-  }
+  // @Patch("/:id")
+  // updateStatus(
+  //   @Param("id") id: string,
+  //   @Body() statusDto: UpdateStatusDto,
+  //   @GetUser() user: User
+  // ): Promise<Task> {
+  //   const status = statusDto.status;
+  //   return this.taskService.updateStatusById(id, status, user);
+  // }
 }
